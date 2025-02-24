@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Space Station Shooter: Ray Gun Edition</title>
+    <style>
+        body { margin: 0; overflow: hidden; background: #1a1a1a; }
+        canvas { display: block; }
+        #hud { position: absolute; top: 10px; left: 10px; color: cyan; font-family: Arial; font-size: 18px; text-shadow: 0 0 5px cyan; }
+        #crosshair { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); color: cyan; font-size: 24px; }
+    </style>
+</head>
+<body>
+    <div id="hud">Drones Left: <span id="enemies">5</span> | Health: <span id="health">100</span> | Ammo: <span id="ammo">∞</span></div>
+    <div id="crosshair">+</div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js"></script>
+    <script>
+        // Scene Setup
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+        const renderer = new THREE.WebGLRenderer({ antialias: true });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        document.body.appendChild(renderer.domElement);
+
+        // Player
+        const player = { pos: new THREE.Vector3(0, 1, 0), health: 100, speed: 0.15, canShoot: true };
+        camera.position.set(player.pos.x, player.pos.y, player.pos.z);
+
+        // Ray Gun Model
+        const gunGeo = new THREE.CylinderGeometry(0.1, 0.15, 1, 16);
+        const gunMat = new THREE.MeshPhongMaterial({ color: 0x00ffff, shininess: 100 });
+        const rayGun = new THREE.Mesh(gunGeo, gunMat);
+        rayGun.position.set(0.5, -0.3, -0.7); // Position in front of camera
+        rayGun.rotation.x = Math.PI / 2;
+        camera.add(rayGun);
+        scene.add(camera);
+
+        // Lighting
+        const ambientLight = new THREE.AmbientLight(0x404040, 0.5);
+        scene.add(ambientLight);
+        const pointLight = new THREE.PointLight(0xffffff, 1, 100);
+        pointLight.position.set(0, 10, 0);
+        scene.add(pointLight);
+
+        // Space Station Environment
+        const floorGeo = new THREE.PlaneGeometry(50, 50);
+        const floorMat = new THREE.MeshPhongMaterial({ color: 0x333333, specular: 0x111111 });
+        const floor = new THREE.Mesh(floorGeo, floorMat);
+        floor.rotation.x = Math.PI /
